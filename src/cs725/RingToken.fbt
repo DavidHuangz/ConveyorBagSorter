@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="RingToken" Comment="Basic Function Block Type" >
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="Rockwell Automation" Version="0.2" Author="JHC" Date="2003-12-04" Remarks="Renamed for better indexing." />
+  <VersionInfo Organization="Rockwell Automation" Version="0.1" Author="JHC" Date="2002-11-05" Remarks="Corrected missing ST element in Algorithm REQ." />
+  <VersionInfo Organization="Rockwell Automation" Version="0.0" Author="JHC" Date="2000-05-30" />
+  <CompilerInfo header="package fb.rt.cs725;" >
+  </CompilerInfo>
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request" >
+        <With Var="EnterPE" />
+        <With Var="Block" />
+        <With Var="Candidate" />
+        <With Var="TokenIn" />
+        <With Var="ExitPE" />
+      </Event>
+      <Event Name="REQ" Comment="Normal Execution Request" >
+        <With Var="EnterPE" />
+        <With Var="Block" />
+        <With Var="Candidate" />
+        <With Var="TokenIn" />
+        <With Var="ExitPE" />
+      </Event>
+      <Event Name="CAS_STOP" >
+        <With Var="TokenIn" />
+        <With Var="ExitPE" />
+      </Event>
+      <Event Name="CAS_START" >
+        <With Var="TokenIn" />
+        <With Var="ExitPE" />
+      </Event>
+      <Event Name="Token_Input" >
+        <With Var="TokenIn" />
+        <With Var="ExitPE" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Comment="Initialization Confirm" >
+        <With Var="MotoRotate" />
+        <With Var="BlockCon" />
+        <With Var="TokenOut" />
+      </Event>
+      <Event Name="CNF" Comment="Execution Confirmation" >
+        <With Var="MotoRotate" />
+        <With Var="BlockCon" />
+        <With Var="TokenOut" />
+      </Event>
+      <Event Name="STOP" >
+        <With Var="TokenOut" />
+      </Event>
+      <Event Name="START" >
+        <With Var="TokenOut" />
+      </Event>
+      <Event Name="Token_Output" >
+        <With Var="TokenOut" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="EnterPE" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="Block" Type="BOOL" />
+      <VarDeclaration Name="Candidate" Type="BOOL" />
+      <VarDeclaration Name="TokenIn" Type="BOOL" />
+      <VarDeclaration Name="ExitPE" Type="BOOL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="MotoRotate" Type="BOOL" Comment="Output event qualifier" />
+      <VarDeclaration Name="BlockCon" Type="BOOL" />
+      <VarDeclaration Name="TokenOut" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars>
+      <VarDeclaration Name="lastPE" Type="BOOL" InitialValue="1" />
+      <VarDeclaration Name="lastBlock" Type="BOOL" InitialValue="0" />
+    </InternalVars>
+    <ECC >
+      <ECState Name="START" x="1766.6666" y="683.3333" >
+        <ECAction Algorithm="RELEASE_TOKEN" Output="Token_Output" />
+      </ECState>
+      <ECState Name="INIT" Comment="Initialization" x="1694.4443" y="200.0" >
+        <ECAction Algorithm="INIT" Output="INITO" />
+        <ECAction Output="CNF" />
+      </ECState>
+      <ECState Name="AWAITING_TOKEN" Comment="Waiting for token" x="322.2222" y="1716.6666" >
+        <ECAction Algorithm="STOP" Output="STOP" />
+        <ECAction Output="CNF" />
+        <ECAction Algorithm="TOKENUSE" />
+      </ECState>
+      <ECState Name="HAS_TOKEN" x="1777.7777" y="1694.4443" >
+        <ECAction Algorithm="USING_TOKEN" Output="Token_Output" />
+      </ECState>
+      <ECState Name="CRITICAL_SECTION" x="1583.3333" y="2744.4443" >
+        <ECAction Algorithm="START" Output="START" />
+        <ECAction Output="CNF" />
+      </ECState>
+      <ECState Name="FINISHED_CRITICAL" x="3549.9998" y="2188.889" >
+      </ECState>
+      <ECState Name="STOP_OTHER_BAGS" Comment="Stop other incoming bags on the same conveyer" x="4827.778" y="1344.4443" >
+        <ECAction Algorithm="STOP" Output="STOP" />
+        <ECAction Output="CNF" />
+      </ECState>
+      <ECState Name="LEAVING_CRITICAL" x="3133.3333" y="1311.1111" >
+        <ECAction Algorithm="TOKENRELEASE" />
+      </ECState>
+      <ECState Name="CAS_STOP" x="511.11108" y="411.11108" >
+        <ECAction Algorithm="STOP" Output="STOP" />
+        <ECAction Output="CNF" />
+      </ECState>
+      <ECState Name="CAS_START" x="3372.2222" y="327.77777" >
+        <ECAction Algorithm="START" Output="START" />
+        <ECAction Output="CNF" />
+      </ECState>
+      <ECState Name="CAS_STOP_1" x="1094.4445" y="3372.2222" >
+        <ECAction Algorithm="STOP" Output="STOP" />
+        <ECAction Output="CNF" />
+      </ECState>
+      <ECTransition Source="INIT" Destination="START" Condition="1" x="1766.6666" y="366.66666" />
+      <ECTransition Source="START" Destination="AWAITING_TOKEN" Condition="REQ&#38;!EnterPE" x="1094.4445" y="1088.8888" />
+      <ECTransition Source="AWAITING_TOKEN" Destination="CRITICAL_SECTION" Condition="Token_Input&#38;TokenIn" x="938.88885" y="2255.5554" />
+      <ECTransition Source="HAS_TOKEN" Destination="CRITICAL_SECTION" Condition="REQ&#38;!EnterPE" x="1649.9999" y="2383.3333" />
+      <ECTransition Source="START" Destination="HAS_TOKEN" Condition="Token_Input&#38;TokenIn" x="1394.4443" y="1266.6666" />
+      <ECTransition Source="HAS_TOKEN" Destination="START" Condition="REQ&#38;EnterPE" x="1955.5554" y="1427.7777" />
+      <ECTransition Source="CRITICAL_SECTION" Destination="FINISHED_CRITICAL" Condition="REQ&#38;EnterPE" x="2750.0" y="2388.889" />
+      <ECTransition Source="START" Destination="INIT" Condition="INIT" x="1988.8888" y="422.2222" />
+      <ECTransition Source="FINISHED_CRITICAL" Destination="STOP_OTHER_BAGS" Condition="REQ&#38;!EnterPE" x="4211.111" y="1855.5555" />
+      <ECTransition Source="FINISHED_CRITICAL" Destination="LEAVING_CRITICAL" Condition="REQ&#38;!ExitPE" x="3233.3333" y="1611.1111" />
+      <ECTransition Source="STOP_OTHER_BAGS" Destination="LEAVING_CRITICAL" Condition="REQ&#38;!ExitPE" x="3955.5554" y="994.4444" />
+      <ECTransition Source="LEAVING_CRITICAL" Destination="START" Condition="REQ&#38;ExitPE" x="2088.889" y="1188.8888" />
+      <ECTransition Source="START" Destination="CAS_STOP" Condition="CAS_STOP" x="722.22217" y="794.4444" />
+      <ECTransition Source="CAS_STOP" Destination="START" Condition="1" x="1144.4445" y="161.1111" />
+      <ECTransition Source="START" Destination="CAS_START" Condition="CAS_START" x="2605.5554" y="327.77777" />
+      <ECTransition Source="CAS_START" Destination="START" Condition="1" x="2733.3333" y="505.55554" />
+      <ECTransition Source="CRITICAL_SECTION" Destination="CAS_STOP_1" Condition="CAS_STOP" x="1400.0" y="3072.2222" />
+      <ECTransition Source="CAS_STOP_1" Destination="CRITICAL_SECTION" Condition="CAS_START" x="1094.4445" y="2983.3333" />
+    </ECC>
+  <Algorithm Name="INIT" Comment="Initialization algorithm" >
+    <ST Text="MotoRotate := TRUE;&#10;Block := FALSE;&#10;" />
+  </Algorithm>
+  <Algorithm Name="REQ" Comment="Normally executed algorithm" >
+    <ST Text="IF Candidate THEN&#10;IF lastPE !:= EnterPE THEN&#10;IF NOT EnterPE THEN&#10;BlockCon:= TRUE;&#10;System.out.println(&#34;BlockCon = true&#34;);&#10;ELSE&#10;BlockCon:=FALSE;&#10;System.out.println(&#34;BlockCon = false&#34;);&#10;END_IF&#10;lastPE := EnterPE;&#10;END_IF&#10;IF lastBlock !:= Block THEN&#10;IF Block THEN&#10;STOP.serviceEvent(this);&#10;MotoRotate := FALSE;&#10;System.out.println(&#34;Cas Stop&#34;);&#10;ELSE&#10;START.serviceEvent(this);&#10;MotoRotate := TRUE;&#10;System.out.println(&#34;Cas Start&#34;);&#10;END_IF&#10;lastBlock := Block;&#10;END_IF&#10;END_IF&#10;" />
+  </Algorithm>
+  <Algorithm Name="START" >
+    <ST Text="MotoRotate:=TRUE;&#10;" />
+  </Algorithm>
+  <Algorithm Name="STOP" >
+    <ST Text="MotoRotate := FALSE;&#10;" />
+  </Algorithm>
+  <Algorithm Name="USING_TOKEN" >
+    <ST Text="TokenOut := FALSE;&#10;" />
+  </Algorithm>
+  <Algorithm Name="RELEASE_TOKEN" >
+    <ST Text="TokenOut := TRUE;&#10;" />
+  </Algorithm>
+  <Algorithm Name="TOKENUSE" >
+    <ST Text="System.out.println(&#34;Ring Token is being used&#34;);&#10;" />
+  </Algorithm>
+  <Algorithm Name="TOKENRELEASE" >
+    <ST Text="System.out.println(&#34;Ring Token has been released&#34;);&#10;" />
+  </Algorithm>
+  </BasicFB>
+</FBType>

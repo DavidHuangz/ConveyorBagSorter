@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="ConveyorCTLServer" Comment="Basic Function Block Type" >
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="Rockwell Automation" Version="0.2" Author="JHC" Date="2003-12-04" Remarks="Renamed for better indexing." />
+  <VersionInfo Organization="Rockwell Automation" Version="0.1" Author="JHC" Date="2002-11-05" Remarks="Corrected missing ST element in Algorithm REQ." />
+  <VersionInfo Organization="Rockwell Automation" Version="0.0" Author="JHC" Date="2000-05-30" />
+  <CompilerInfo header="package fb.rt.cs725;" >
+  </CompilerInfo>
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request" >
+        <With Var="EnterPE" />
+        <With Var="Block" />
+        <With Var="Candidate" />
+      </Event>
+      <Event Name="REQ" Comment="Normal Execution Request" >
+        <With Var="EnterPE" />
+        <With Var="Block" />
+        <With Var="Candidate" />
+      </Event>
+      <Event Name="CAS_STOP" >
+      </Event>
+      <Event Name="CAS_START" >
+      </Event>
+      <Event Name="Grant" >
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Comment="Initialization Confirm" >
+        <With Var="MotoRotate" />
+        <With Var="BlockCon" />
+      </Event>
+      <Event Name="CNF" Comment="Execution Confirmation" >
+        <With Var="MotoRotate" />
+        <With Var="BlockCon" />
+      </Event>
+      <Event Name="STOP" >
+      </Event>
+      <Event Name="START" >
+      </Event>
+      <Event Name="Request" >
+      </Event>
+      <Event Name="Release" >
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="EnterPE" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="Block" Type="BOOL" />
+      <VarDeclaration Name="Candidate" Type="BOOL" />
+      <VarDeclaration Name="ExitPE" Type="BOOL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="MotoRotate" Type="BOOL" Comment="Output event qualifier" />
+      <VarDeclaration Name="BlockCon" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars>
+      <VarDeclaration Name="lastPE" Type="BOOL" InitialValue="1" />
+      <VarDeclaration Name="lastBlock" Type="BOOL" InitialValue="0" />
+    </InternalVars>
+    <ECC >
+      <ECState Name="START" Comment="Initial State" x="1394.4443" y="622.22217" >
+      </ECState>
+      <ECState Name="INIT" Comment="Initialization" x="1394.4443" y="177.77777" >
+        <ECAction Algorithm="INIT" Output="INITO" />
+        <ECAction Output="CNF" />
+      </ECState>
+      <ECState Name="REQ" Comment="Normal execution" x="444.44443" y="611.1111" >
+        <ECAction Algorithm="REQ" Output="CNF" />
+      </ECState>
+      <ECState Name="CAS_START" x="494.44443" y="1244.4443" >
+        <ECAction Algorithm="START" Output="START" />
+        <ECAction Output="CNF" />
+      </ECState>
+      <ECState Name="CAS_STOP" x="2594.4443" y="238.88889" >
+        <ECAction Algorithm="STOP" Output="STOP" />
+        <ECAction Output="CNF" />
+      </ECState>
+      <ECState Name="REQUEST" x="3077.7776" y="616.6666" >
+        <ECAction Algorithm="STOP" Output="STOP" />
+        <ECAction Output="CNF" />
+        <ECAction Algorithm="REQUEST" Output="Request" />
+      </ECState>
+      <ECState Name="GRANTED" x="3299.9998" y="1594.4443" >
+        <ECAction Algorithm="START" Output="START" />
+        <ECAction Algorithm="GRANTED" Output="CNF" />
+      </ECState>
+      <ECState Name="RELEASE" x="1388.8888" y="1777.7777" >
+        <ECAction Algorithm="RELEASE" Output="Release" />
+      </ECState>
+      <ECState Name="WAIT" x="3655.5554" y="2366.6665" >
+      </ECState>
+      <ECState Name="REQUEST_2" x="4622.222" y="2761.111" >
+        <ECAction Algorithm="STOP" Output="STOP" />
+        <ECAction Algorithm="REQUEST_2" />
+      </ECState>
+      <ECState Name="RELEASE_2" x="5111.111" y="1244.4443" >
+        <ECAction Algorithm="RELEASE_2" Output="Release" />
+      </ECState>
+      <ECState Name="WAITRELEASE" x="1894.4443" y="2738.8887" >
+      </ECState>
+      <ECState Name="WAIT_2" x="5361.111" y="2094.4443" >
+      </ECState>
+      <ECState Name="CAS_STOP_1" x="2250.0" y="3316.6665" >
+        <ECAction Algorithm="STOP" Output="STOP" />
+        <ECAction Output="CNF" />
+      </ECState>
+      <ECState Name="CAS_STOP_2" x="4350.0" y="2016.6666" >
+        <ECAction Algorithm="STOP" Output="STOP" />
+        <ECAction Output="CNF" />
+      </ECState>
+      <ECState Name="CAS_START_2" x="2500.0" y="2122.2222" >
+        <ECAction Algorithm="START" Output="START" />
+        <ECAction Output="CNF" />
+      </ECState>
+      <ECState Name="CAS_START_1" x="555.55554" y="2727.7776" >
+        <ECAction Algorithm="START" Output="START" />
+        <ECAction Output="CNF" />
+      </ECState>
+      <ECTransition Source="START" Destination="INIT" Condition="INIT" x="1394.4443" y="427.77777" />
+      <ECTransition Source="INIT" Destination="START" Condition="1" x="1144.4445" y="183.33333" />
+      <ECTransition Source="START" Destination="REQ" Condition="REQ&#38;Candidate" x="444.44443" y="272.2222" />
+      <ECTransition Source="REQ" Destination="START" Condition="1" x="1072.2222" y="622.22217" />
+      <ECTransition Source="START" Destination="CAS_START" Condition="CAS_START" x="494.44443" y="811.1111" />
+      <ECTransition Source="CAS_START" Destination="START" Condition="1" x="899.99994" y="966.6666" />
+      <ECTransition Source="START" Destination="CAS_STOP" Condition="CAS_STOP" x="2094.4443" y="244.44443" />
+      <ECTransition Source="CAS_STOP" Destination="START" Condition="1" x="2055.5554" y="411.11108" />
+      <ECTransition Source="REQUEST" Destination="GRANTED" Condition="Grant" x="3183.3333" y="1227.7777" />
+      <ECTransition Source="WAIT" Destination="WAITRELEASE" Condition="REQ&#38;!ExitPE" x="2627.7776" y="2600.0" />
+      <ECTransition Source="RELEASE" Destination="START" Condition="1" x="1400.0" y="1544.4443" />
+      <ECTransition Source="START" Destination="REQUEST" Condition="REQ&#38;!EnterPE" x="2494.4443" y="622.22217" />
+      <ECTransition Source="GRANTED" Destination="WAIT" Condition="REQ&#38;EnterPE" x="3394.4443" y="1899.9999" />
+      <ECTransition Source="WAIT" Destination="REQUEST_2" Condition="REQ&#38;!EnterPE" x="3966.6665" y="2655.5554" />
+      <ECTransition Source="REQUEST_2" Destination="WAIT_2" Condition="REQ&#38;!ExitPE" x="5011.111" y="2411.111" />
+      <ECTransition Source="RELEASE_2" Destination="REQUEST" Condition="1" x="4105.555" y="1244.4443" />
+      <ECTransition Source="WAITRELEASE" Destination="RELEASE" Condition="REQ&#38;ExitPE" x="1416.6666" y="2327.7776" />
+      <ECTransition Source="WAIT_2" Destination="RELEASE_2" Condition="REQ&#38;ExitPE" x="5255.555" y="1600.0" />
+      <ECTransition Source="WAITRELEASE" Destination="CAS_STOP_1" Condition="CAS_STOP" x="1894.4443" y="3088.8887" />
+      <ECTransition Source="CAS_STOP_1" Destination="WAITRELEASE" Condition="1" x="2250.0" y="3000.0" />
+      <ECTransition Source="WAIT" Destination="CAS_STOP_2" Condition="CAS_STOP" x="3838.8887" y="2016.6666" />
+      <ECTransition Source="CAS_STOP_2" Destination="WAIT" Condition="1" x="4216.6665" y="2366.6665" />
+      <ECTransition Source="WAIT" Destination="CAS_START_2" Condition="CAS_START" x="2800.0" y="1783.3333" />
+      <ECTransition Source="CAS_START_2" Destination="WAIT" Condition="1" x="2733.3333" y="2388.889" />
+      <ECTransition Source="WAITRELEASE" Destination="CAS_START_1" Condition="CAS_START" x="877.7778" y="2444.4443" />
+      <ECTransition Source="CAS_START_1" Destination="WAITRELEASE" Condition="1" x="866.6666" y="3072.2222" />
+    </ECC>
+  <Algorithm Name="INIT" Comment="Initialization algorithm" >
+    <ST Text="MotoRotate := TRUE;&#10;Block := FALSE;&#10;" />
+  </Algorithm>
+  <Algorithm Name="REQ" Comment="Normally executed algorithm" >
+    <ST Text="IF Candidate THEN&#10;IF lastPE !:= EnterPE THEN&#10;IF NOT EnterPE THEN&#10;BlockCon:= TRUE;&#10;System.out.println(&#34;BlockCon = true&#34;);&#10;ELSE&#10;BlockCon:=FALSE;&#10;System.out.println(&#34;BlockCon = false&#34;);&#10;END_IF&#10;lastPE := EnterPE;&#10;END_IF&#10;IF lastBlock !:= Block THEN&#10;IF Block THEN&#10;STOP.serviceEvent(this);&#10;MotoRotate := FALSE;&#10;System.out.println(&#34;Cas Stop&#34;);&#10;ELSE&#10;START.serviceEvent(this);&#10;MotoRotate := TRUE;&#10;System.out.println(&#34;Cas Start&#34;);&#10;END_IF&#10;lastBlock := Block;&#10;END_IF&#10;END_IF&#10;" />
+  </Algorithm>
+  <Algorithm Name="START" >
+    <ST Text="MotoRotate:=TRUE;&#10;" />
+  </Algorithm>
+  <Algorithm Name="STOP" >
+    <Other Language="Java" Text="MotoRotate.value=false;&#10;" />
+  </Algorithm>
+  <Algorithm Name="REQUEST" >
+    <Other Language="Java" Text="System.out.println(&#34;Request to Central Server&#34;);&#10;" />
+  </Algorithm>
+  <Algorithm Name="GRANTED" >
+    <Other Language="Java" Text="System.out.println(&#34;Request granted for Critical Section 1&#34;);&#10;" />
+  </Algorithm>
+  <Algorithm Name="REQUEST_2" >
+    <Other Language="Java" Text="System.out.println(&#34;Request 2nd&#34;);&#10;" />
+  </Algorithm>
+  <Algorithm Name="RELEASE_2" >
+    <Other Language="Java" Text="System.out.println(&#34;2nd Release token to Central Server&#34;);&#10;" />
+  </Algorithm>
+  <Algorithm Name="RELEASE" >
+    <Other Language="Java" Text="System.out.println(&#34;Release token to Central Server&#34;);&#10;" />
+  </Algorithm>
+  </BasicFB>
+</FBType>

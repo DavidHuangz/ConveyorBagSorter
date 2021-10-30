@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="TwoConCtlRingToken" Comment="Composite Function Block Type" >
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="Rockwell Automation" Version="0.2" Author="JHC" Date="2003-12-05" Remarks="Renamed from NEWCOMPFB." />
+  <VersionInfo Organization="Rockwell Automation" Version="0.1" Author="JHC" Date="2002-01-08" Remarks="Added DLY FB as example." />
+  <VersionInfo Organization="Rockwell Automation" Version="0.0" Author="JHC" Date="2000-05-27" />
+  <CompilerInfo header="package fb.rt.cs725;" >
+  </CompilerInfo>
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request" >
+        <With Var="Candidate" />
+        <With Var="Block" />
+        <With Var="EnterPE" />
+      </Event>
+      <Event Name="REQ" Comment="Normal Execution Request" >
+        <With Var="Candidate" />
+        <With Var="EnterPE" />
+      </Event>
+      <Event Name="START" >
+        <With Var="Block" />
+      </Event>
+      <Event Name="STOP" >
+        <With Var="Block" />
+      </Event>
+      <Event Name="Token_Input" >
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Comment="Initialization Confirm" >
+        <With Var="MotoRotate1" />
+        <With Var="MotoRotate2" />
+        <With Var="BlockCon" />
+      </Event>
+      <Event Name="CNF" Comment="Execution Confirmation" >
+        <With Var="MotoRotate1" />
+        <With Var="MotoRotate2" />
+        <With Var="BlockCon" />
+      </Event>
+      <Event Name="Token_Output" >
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="Candidate" Type="BOOL" />
+      <VarDeclaration Name="Block" Type="BOOL" />
+      <VarDeclaration Name="EnterPE" Type="BOOL" />
+      <VarDeclaration Name="TokenIn" Type="BOOL" />
+      <VarDeclaration Name="ExitPE" Type="BOOL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="MotoRotate1" Type="BOOL" />
+      <VarDeclaration Name="MotoRotate2" Type="BOOL" />
+      <VarDeclaration Name="BlockCon" Type="BOOL" />
+      <VarDeclaration Name="TokenOut" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <FBNetwork >
+    <FB Name="FC11" Type="ConveyorCTL" x="327.77777" y="461.11108" >
+      <Parameter Name="PE" Value="0" />
+      <Parameter Name="Block" Value="0" />
+      <Parameter Name="Candidate" Value="0" />
+    </FB>
+    <FB Name="RingToken" Type="RingToken" x="1944.4443" y="461.11108" />
+    <EventConnections>
+      <Connection Source="INIT" Destination="FC11.INIT" dx1="222.22221" />
+      <Connection Source="REQ" Destination="FC11.REQ" dx1="216.66666" />
+      <Connection Source="RingToken.STOP" Destination="FC11.CAS_STOP" dx1="83.33333" dx2="83.33333" dy="-433.3333" />
+      <Connection Source="RingToken.START" Destination="FC11.CAS_START" dx1="50.0" dx2="50.0" dy="-577.7778" />
+      <Connection Source="RingToken.INITO" Destination="INITO" dx1="2816.6665" />
+      <Connection Source="FC11.INITO" Destination="RingToken.INIT" dx1="899.99994" />
+      <Connection Source="REQ" Destination="RingToken.REQ" dx1="1833.3333" />
+      <Connection Source="STOP" Destination="RingToken.CAS_STOP" dx1="1816.6666" />
+      <Connection Source="START" Destination="RingToken.CAS_START" dx1="1799.9999" />
+      <Connection Source="Token_Input" Destination="RingToken.Token_Input" dx1="1727.7777" />
+      <Connection Source="RingToken.Token_Output" Destination="Token_Output" dx1="2922.2222" />
+    </EventConnections>
+    <DataConnections>
+      <Connection Source="FC11.MotoRotate" Destination="MotoRotate1" dx1="1127.7777" />
+      <Connection Source="RingToken.MotoRotate" Destination="MotoRotate2" dx1="2905.5554" />
+      <Connection Source="RingToken.BlockCon" Destination="BlockCon" dx1="2861.111" />
+      <Connection Source="RingToken.TokenOut" Destination="TokenOut" dx1="2866.6665" />
+      <Connection Source="EnterPE" Destination="RingToken.EnterPE" dx1="1783.3333" />
+      <Connection Source="Block" Destination="RingToken.Block" dx1="1822.2222" />
+      <Connection Source="Candidate" Destination="RingToken.Candidate" dx1="1755.5555" />
+      <Connection Source="TokenIn" Destination="RingToken.TokenIn" dx1="1788.8888" />
+      <Connection Source="ExitPE" Destination="RingToken.ExitPE" dx1="1805.5555" />
+    </DataConnections>
+  </FBNetwork>
+</FBType>

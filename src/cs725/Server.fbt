@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="Server" >
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="Rockwell Automation" Version="0.2" Author="JHC" Date="2003-12-04" Remarks="Renamed for better indexing." />
+  <VersionInfo Organization="Rockwell Automation" Version="0.1" Author="JHC" Date="2002-11-05" Remarks="Corrected missing ST element in Algorithm REQ." />
+  <VersionInfo Organization="Rockwell Automation" Version="0.0" Author="JHC" Date="2000-05-30" />
+  <CompilerInfo header="package fb.rt.cs725;" >
+  </CompilerInfo>
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="Req1" >
+      </Event>
+      <Event Name="Req3" Comment="Normal Execution Request" >
+      </Event>
+      <Event Name="Release1" >
+      </Event>
+      <Event Name="Release3" >
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="Grant1" >
+      </Event>
+      <Event Name="Grant3" >
+      </Event>
+    </EventOutputs>
+  </InterfaceList>
+  <BasicFB>
+    <ECC >
+      <ECState Name="START" Comment="Initial State" x="552.9412" y="429.4117" >
+      </ECState>
+      <ECState Name="INIT" Comment="Initialization" x="923.5294" y="141.1765" >
+        <ECAction Algorithm="INIT" Output="Grant1" />
+      </ECState>
+      <ECState Name="REQ" Comment="Normal execution" x="217.647" y="752.9412" >
+        <ECAction Algorithm="REQ" Output="Grant3" />
+      </ECState>
+      <ECTransition Source="START" Destination="INIT" Condition="Req1" x="923.5294" y="429.4117" />
+      <ECTransition Source="INIT" Destination="START" Condition="1" x="552.9412" y="141.1765" />
+      <ECTransition Source="START" Destination="REQ" Condition="Req3" x="552.9412" y="600.0" />
+      <ECTransition Source="REQ" Destination="START" Condition="1" x="217.647" y="429.4117" />
+    </ECC>
+  <Algorithm Name="INIT" Comment="Initialization algorithm" >
+    <ST Text="" />
+  </Algorithm>
+  <Algorithm Name="REQ" Comment="Normally executed algorithm" >
+    <ST Text="" />
+  </Algorithm>
+  </BasicFB>
+</FBType>

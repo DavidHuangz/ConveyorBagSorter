@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="MY_X2Y2_J" Comment="Compute X^2-Y^2 in ST" >
+  <Identification Standard="61499-1" />
+  <VersionInfo Organization="Rockwell Automation" Version="0.0" Author="JHC" Date="2002-09-24" Remarks="Derived from FB_X2Y2_J." />
+  <CompilerInfo header="package fb.rt.student;" >
+    <Compiler Language="Java" Vendor="IBM" Product="Jikes" Version="1.0.6" />
+  </CompilerInfo>
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="REQ" >
+        <With Var="Y" />
+        <With Var="X" />
+      </Event>
+      <Event Name="XYZ" >
+        <With Var="Y" />
+        <With Var="X" />
+        <With Var="Z" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="CNF" >
+        <With Var="OUT" />
+      </Event>
+      <Event Name="CNF2" >
+        <With Var="OUT2" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="X" Type="REAL" />
+      <VarDeclaration Name="Y" Type="REAL" />
+      <VarDeclaration Name="Z" Type="REAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="OUT" Type="REAL" />
+      <VarDeclaration Name="OUT2" Type="REAL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <ECC >
+      <ECState Name="START" x="211.1111" y="166.66666" >
+      </ECState>
+      <ECState Name="REQ" x="555.55554" y="550.0" >
+        <ECAction Algorithm="REQ" Output="CNF" />
+      </ECState>
+      <ECState Name="XYZ_S" x="511.11108" y="1172.2222" >
+        <ECAction Algorithm="XYZ_COMP" Output="CNF2" />
+      </ECState>
+      <ECTransition Source="START" Destination="REQ" Condition="REQ" x="211.1111" y="561.1111" />
+      <ECTransition Source="XYZ_S" Destination="START" Condition="1" x="466.66666" y="727.7778" />
+      <ECTransition Source="REQ" Destination="START" Condition="1" x="555.55554" y="166.66666" />
+      <ECTransition Source="START" Destination="XYZ_S" Condition="XYZ" x="55.555553" y="999.99994" />
+    </ECC>
+  <Algorithm Name="REQ" >
+    <Other Language="Java" Text="OUT.value = X.value*X.value+Y.value*Y.value;&#10;" />
+  </Algorithm>
+  <Algorithm Name="XYZ_COMP" >
+    <Other Language="Java" Text="OUT2.value = X.value + Y.value + Z.value;&#10;System.out.println(&#34;This is in algorithm XYZ&#34;);&#10;" />
+  </Algorithm>
+  </BasicFB>
+</FBType>

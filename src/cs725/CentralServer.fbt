@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE FBType SYSTEM "http://www.holobloc.com/xml/LibraryElement.dtd" >
+<FBType Name="CentralServer" >
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="Rockwell Automation" Version="0.2" Author="JHC" Date="2003-12-04" Remarks="Renamed for better indexing." />
+  <VersionInfo Organization="Rockwell Automation" Version="0.1" Author="JHC" Date="2002-11-05" Remarks="Corrected missing ST element in Algorithm REQ." />
+  <VersionInfo Organization="Rockwell Automation" Version="0.0" Author="JHC" Date="2000-05-30" />
+  <CompilerInfo header="package fb.rt.cs725;" >
+  </CompilerInfo>
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="Request1" Comment="Initialization Request" >
+      </Event>
+      <Event Name="Request3" Comment="dab" >
+      </Event>
+      <Event Name="Release1" >
+      </Event>
+      <Event Name="Release3" >
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="Grant1" Comment="Initialization Confirm" >
+      </Event>
+      <Event Name="Grant3" Comment="Execution Confirmation" >
+      </Event>
+    </EventOutputs>
+  </InterfaceList>
+  <BasicFB>
+    <ECC >
+      <ECState Name="START" Comment="Init state" x="1483.3333" y="466.66666" >
+        <ECAction Algorithm="NOREQUEST" />
+      </ECState>
+      <ECState Name="GRANT_1" x="1450.0" y="2022.2222" >
+        <ECAction Algorithm="GRANT_1" Output="Grant1" />
+      </ECState>
+      <ECState Name="GRANT_3" x="4405.555" y="1077.7777" >
+        <ECAction Algorithm="GRANT_3" Output="Grant3" />
+      </ECState>
+      <ECState Name="QUEUE_3" x="3016.6665" y="1566.6666" >
+        <ECAction Algorithm="QUEUE_3" />
+      </ECState>
+      <ECState Name="QUEUE_1" x="3544.4443" y="2372.2222" >
+        <ECAction Algorithm="QUEUE_1" />
+      </ECState>
+      <ECTransition Source="START" Destination="GRANT_1" Condition="Request1" x="1811.1111" y="1155.5555" />
+      <ECTransition Source="GRANT_1" Destination="START" Condition="Release1" x="1100.0" y="1272.2222" />
+      <ECTransition Source="START" Destination="GRANT_3" Condition="Request3" x="2988.8887" y="716.6666" />
+      <ECTransition Source="GRANT_3" Destination="START" Condition="Release3" x="3144.4443" y="377.77777" />
+      <ECTransition Source="GRANT_1" Destination="QUEUE_3" Condition="Request3" x="1894.4443" y="1772.2222" />
+      <ECTransition Source="QUEUE_3" Destination="GRANT_3" Condition="Release1" x="3805.5554" y="1322.2222" />
+      <ECTransition Source="GRANT_3" Destination="QUEUE_1" Condition="Request1" x="4233.333" y="1738.8888" />
+      <ECTransition Source="QUEUE_1" Destination="GRANT_1" Condition="Release3" x="2300.0" y="2300.0" />
+    </ECC>
+  <Algorithm Name="GRANT_1" Comment="Initialization algorithm" >
+    <Other Language="Java" Text="System.out.println(&#34;Token granted to FC1&#34;);&#10;" />
+  </Algorithm>
+  <Algorithm Name="GRANT_3" Comment="Initialization algorithm" >
+    <Other Language="Java" Text="System.out.println(&#34;Token granted to FC3&#34;);&#10;" />
+  </Algorithm>
+  <Algorithm Name="NOREQUEST" Comment="Normally executed algorithm" >
+    <Other Language="Java" Text="System.out.println(&#34;No request&#34;);&#10;" />
+  </Algorithm>
+  <Algorithm Name="QUEUE_3" Comment="Normally executed algorithm" >
+    <Other Language="Java" Text="System.out.println(&#34;FC3 waiting for token&#34;);&#10;" />
+  </Algorithm>
+  <Algorithm Name="QUEUE_1" Comment="Normally executed algorithm" >
+    <Other Language="Java" Text="System.out.println(&#34;FC1 waiting for token&#34;);&#10;" />
+  </Algorithm>
+  </BasicFB>
+</FBType>
