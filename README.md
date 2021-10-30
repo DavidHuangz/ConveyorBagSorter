@@ -1,4 +1,4 @@
-# 725_Assignment_2
+# Conveyor Bag sorter
 ## About Project
 This COMPSYS725 Assignment two aims to implement the conveyor control system for a small part of the rudimentary baggage handling system (BHS). The main objectve of this assignment is to prevent the collision of bags using appropriate mutual exclusion algorithms which includes central server, ring token and multicasting.
 
